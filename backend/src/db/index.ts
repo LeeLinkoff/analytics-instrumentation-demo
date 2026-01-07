@@ -40,9 +40,14 @@ export const pool = new Pool({
 
 /*
  * Health check used at startup and /api/health
+ * Intentionally masks low-level driver errors.
  */
 export async function dbHealthCheck(): Promise<void> {
-  await pool.query("select 1");
+  try {
+    await pool.query("select 1");
+  } catch {
+    throw new Error("Database connection failed");
+  }
 }
 
 /*

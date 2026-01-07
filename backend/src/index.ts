@@ -105,7 +105,12 @@ async function start(): Promise<void> {
 }
 
 
-start().catch((e) => {
-  console.error("Startup failed", e);
+// Intentionally suppress internal error details at startup.
+// Low-level stack traces are not actionable here and may leak internals.
+start().catch(() => {
+  console.error(
+    "Startup failed: database connection could not be established. " +
+    "Check DATABASE_URL and database credentials."
+  );
   process.exit(1);
 });

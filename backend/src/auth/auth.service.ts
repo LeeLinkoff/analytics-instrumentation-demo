@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { pool } from "../db";
 import { User } from "../types/user";
+import { posthog } from "../analytics/posthog";
 
 const SALT_ROUNDS = 12;
 
@@ -65,11 +66,21 @@ export async function authenticateUser(email: string, password: string): Promise
     throw new Error("Invalid credentials");
   }
 
+
   const token = jwt.sign(
     { userId: user.id },
     mustGetEnv("JWT_SECRET"),
     { expiresIn: "7d" }
   );
+
+  // accounting if posthog analytics not setup with API key yet
+  posthog?.capture({
+   distinctId: user.id,
+   event: "user_logged_in",
+   properties: {
+     email: user.email
+   }
+  });
 
   return token;
 }
