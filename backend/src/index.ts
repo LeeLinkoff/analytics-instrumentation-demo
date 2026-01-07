@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 import express, { Request, Response } from "express";
 import cors from "cors";
 import { authRouter } from "./auth/auth.routes";
@@ -33,7 +35,7 @@ const port = Number(process.env.PORT || 3000);
 async function start(): Promise<void> {
   await dbHealthCheck();
   console.log("DB connection verified");
-  
+
   const server = app.listen(port, "0.0.0.0", () => {
     console.log(`Backend listening on port ${port}`);
     console.log("Backend startup complete");

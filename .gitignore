@@ -171,3 +171,9 @@ Thumbs.db
 # Editor folders
 .vscode/
 .idea/
+
+
+# batch file helpers
+build.bat
+run.bat
+dev.bat
