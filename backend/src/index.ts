@@ -4,6 +4,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import { authRouter } from "./auth/auth.routes";
 import { dbHealthCheck, shutdownDb } from "./db";
+import { requireAuth, AuthRequest } from "./middleware/auth.middleware";
 
 function mustGetEnv(name: string): string {
   const v = process.env[name];
@@ -49,6 +50,17 @@ api.get("/health", async (_req: Request, res: Response) => {
     });
   }
 });
+
+// Demo endpoint to prove auth middleware reuse outside /auth
+api.get("/session", requireAuth, (req: AuthRequest, res) => {
+  res.json({
+    authenticated: true,
+    user: {
+      id: req.userId
+    }
+  });
+});
+
 
 api.use("/auth", authRouter);
 app.use("/api", api);

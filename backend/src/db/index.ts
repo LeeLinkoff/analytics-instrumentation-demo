@@ -1,8 +1,8 @@
 import { Pool } from "pg";
 
-/**
- * Small helper to fail fast if a required env var is missing.
- * Helps with debugging if crash early versus mmisconfigured
+/*
+ * Small helper to fail fast if a required environment variable is missing.
+ * Makes misconfiguration obvious instead of failing later.
  */
 function mustGetEnv(name: string): string {
   const v = process.env[name];
@@ -15,8 +15,9 @@ function mustGetEnv(name: string): string {
 const rawUrl = mustGetEnv("DATABASE_URL");
 
 /*
- * Development only connection logging to help if cloud based db services goes south
- * Helps catch misconfigurations when changing environment variables, but intentionally avoids logging credentials.
+ * Development-only connection logging to help when cloud-based DB services go south.
+ * Helps catch misconfigurations when changing environment variables,
+ * but intentionally avoids logging credentials.
  */
 if (process.env.NODE_ENV !== "production") {
   try {
