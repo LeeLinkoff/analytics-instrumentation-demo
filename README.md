@@ -151,6 +151,16 @@ The intent is inspection, not setup.
 
 ---
 
+## Runtime behavior (dev vs production)
+
+This project intentionally distinguishes between development and production startup behavior to make failure modes explicit,
+
+In development, the server can start without a database connection so analytics ingestion and failure modes can be reasoned about in isolation. Routes that depend on the database are not mocked and will fail normally if called.
+
+In production, the database check is enforced at startup. If the database cannot be reached, the process exits immediately with a non-zero status. This prevents misconfigured deployments from running in a degraded state.
+
+---
+
 ## Reviewer Guidance
 
 This project should be evaluated on:

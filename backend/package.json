@@ -4,8 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "dev": "set SKIP_DB_CHECK=true&& ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js"
   },
