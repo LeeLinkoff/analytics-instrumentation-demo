@@ -16,6 +16,7 @@ function App() {
   const [response, setResponse] = useState<EventResponse | null>(null);
   const [status, setStatus] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -23,32 +24,36 @@ function App() {
     throw new Error("VITE_API_BASE_URL is not defined");
   }
 
-  const sendEvent = async () => {
-    setError(null);
-    setResponse(null);
-    setStatus(null);
+ const sendEvent = async () => {
+  setError(null);
+  setResponse(null);
+  setStatus(null);
+  setLoading(true);
 
-    try {
-      const res = await fetch(`${API_BASE_URL}/events`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          event: eventName,
-          userId: userId || undefined,
-          forceDuplicate,
-          forceDelayMs: forceDelay ? delayMs : undefined
-        })
-      });
+  try {
+    const res = await fetch(`${API_BASE_URL}/events`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        event: eventName,
+        userId: userId || undefined,
+        forceDuplicate,
+        forceDelayMs: forceDelay ? delayMs : undefined
+      })
+    });
 
-      setStatus(res.status);
-      const json = await res.json();
-      setResponse(json);
-    } catch (e: any) {
-      setError(e.message ?? "Request failed");
-    }
-  };
+    setStatus(res.status);
+    const json = await res.json();
+    setResponse(json);
+  } catch (e: any) {
+    setError(e.message ?? "Request failed");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div style={{ maxWidth: 700, margin: "40px auto", textAlign: "left" }}>
@@ -124,6 +129,8 @@ function App() {
       <button onClick={sendEvent}>Send event</button>
 
       <hr />
+
+    {loading && <div style={{ color: "#555" }}>Sending event…</div>}
 
 	<h3>Result</h3>
 
